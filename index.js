@@ -5,6 +5,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(morgan((tokens, req, res) => {
   let ret = [
@@ -110,7 +111,6 @@ app.delete('/api/persons/:id', (req, res) => {
   persons = persons.filter(person => person.id !== id)
   res.status(204).end()
 })
-
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

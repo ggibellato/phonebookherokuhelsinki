@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "watch": "nodemon index.js"
+    "watch": "nodemon index.js",
+    "build:ui": "rmdir build /s /q && cd ../../part2/phonebook && npm run build --prod && xcopy .\\build ..\\..\\part3\\Phonebookbackend\\build /S /I",
+    "deploy": "git push origin master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy"
   },
   "author": "Gleison Gibellato da Silva",
   "license": "MIT",
