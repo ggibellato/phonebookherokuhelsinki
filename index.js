@@ -4,7 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const Phonebook = require('./models/phonebook')
+const Phonebook = require('./models/phonebook').default
 
 app.use(cors())
 app.use(express.static('build'))
@@ -15,11 +15,11 @@ app.use(morgan((tokens, req, res) => {
     tokens.url(req, res),
     tokens.status(req, res),
     tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms'];
-    
+    tokens['response-time'](req, res), 'ms']
+
   const body = req.body
   if(Object.entries(body).length !== 0) {
-    ret = ret.concat(JSON.stringify(body));
+    ret = ret.concat(JSON.stringify(body))
   }
   return ret.join(' ')
 }))
@@ -53,20 +53,20 @@ app.post('/api/persons', (request, response, next) => {
 
 app.get('/api/persons/:id', (req, res, next) => {
   Phonebook.findById(req.params.id)
-  .then(person => { 
-    if(person) {
-      res.json(person.toJSON())
-    }  
-     else {
-       res.status(404).end()
-     }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if(person) {
+        res.json(person.toJSON())
+      }
+      else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Phonebook.findByIdAndRemove(req.params.id)
-    .then(result => res.status(204).end())
+    .then(() => res.status(204).end())
     .catch(error => next(error))
 })
 
@@ -77,19 +77,18 @@ app.put('/api/persons/:id', (req, res, next) => {
     name: body.name,
     number: body.number
   })
-  Phonebook.findByIdAndUpdate(req.params.id, person, {new: true})
+  Phonebook.findByIdAndUpdate(req.params.id, person, { new: true })
     .then(result => res.json(result.toJSON()))
     .catch(error => next(error))
 })
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response) => {
   console.error(error.message)
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
   else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
-    next(error)
   }
 }
 app.use(errorHandler)

@@ -9,7 +9,8 @@
     "watch": "nodemon index.js",
     "build:ui": "rmdir build /s /q && cd ../../part2/phonebook && npm run build --prod && xcopy .\\build ..\\..\\part3\\Phonebookbackend\\build /S /I",
     "deploy": "git push origin master",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy"
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "lint": "eslint ."
   },
   "author": "Gleison Gibellato da Silva",
   "license": "MIT",
@@ -20,5 +21,8 @@
     "mongoose": "^5.7.12",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.1"
   }
 }
