@@ -4,7 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const Phonebook = require('./models/phonebook').default
+const Phonebook = require('./models/phonebook')
 
 app.use(cors())
 app.use(express.static('build'))
@@ -40,14 +40,15 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.post('/api/persons', (request, response, next) => {
-  const body = request.body
+app.post('/api/persons', (req, res, next) => {
+  const body = req.body
   const person = new Phonebook({
     name: body.name,
     number: body.number
   })
+  console.log('add', person)
   person.save()
-    .then(savedPerson => response.json(savedPerson.toJSON()))
+    .then(savedPerson => res.json(savedPerson.toJSON()))
     .catch(error => next(error))
 })
 
@@ -82,14 +83,15 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-const errorHandler = (error, request, response) => {
-  console.error(error.message)
+const errorHandler = (error, req, res, next) => {
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
-    return response.status(400).send({ error: 'malformatted id' })
+    return res.status(400).send({ error: 'malformatted id' })
   }
   else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    console.log('validation', error.message)
+    return res.status(400).json({ error: error.message })
   }
+  next(error)
 }
 app.use(errorHandler)
 
